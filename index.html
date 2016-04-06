@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <title>mkpw</title>
+  </head>
+  <body>
+    <h1>mkpw</h1>
+    <p>
+    <label>list of characters:
+      <input type="text"
+             id="list"
+             value="abcdefghijklmnopqrstvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+             size="80"
+             >
+    </label>
+      <br>
+      <label>length of password:
+        <input type="number" id="length" value="10">
+      </label>
+      <br>
+      <input type="button" id="generate" value="Generate">
+    </p>
+    <div id="result" style="font-family: monospace;"></div>
+    <script>
+(function() {
+  "strict";
+
+  document.getElementById("generate").onclick = function(event) {
+    let res = "";
+    let len = document.getElementById("length").value;
+    let cs = document.getElementById("list").value;
+    let cs_len = cs.length;
+    for (let i = 0; i < len; i++) {
+      res += cs[Math.floor(cs_len * Math.random())];
+    }
+    document.getElementById("result").innerHTML += "<p>" + res + "</p>";
+  };
+
+})();
+    </script>
+  </body>
+</html>
