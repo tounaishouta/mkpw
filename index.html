@@ -4,39 +4,56 @@
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <title>mkpw</title>
   </head>
-  <body>
+  <body style="font-family: monospace; font-size: large;">
+
     <h1>mkpw</h1>
-    <p>
-    <label>list of characters:
-      <input type="text"
-             id="list"
-             value="abcdefghijklmnopqrstvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-             size="80"
-             >
-    </label>
-      <br>
-      <label>length of password:
-        <input type="number" id="length" value="10">
-      </label>
-      <br>
-      <input type="button" id="generate" value="Generate">
-    </p>
-    <div id="result" style="font-family: monospace;"></div>
+
+    <form id="form">
+
+      <p><label>
+        length of password:
+        <input type="number" id="length_of_password"/>
+      </label></p>
+
+      <p><label>
+        list of characters:
+        <input type="text" id="list_of_characters" size="80"/>
+      </label></p>
+
+      <p><input type="submit" value="Generate"/></p>
+
+    </form>
+
+    <div id="stdout"></div>
+
     <script>
 (function() {
-  "strict";
+  'strict';
 
-  document.getElementById("generate").onclick = function(event) {
-    let res = "";
-    let len = document.getElementById("length").value;
-    let cs = document.getElementById("list").value;
-    let cs_len = cs.length;
-    for (let i = 0; i < len; i++) {
-      res += cs[Math.floor(cs_len * Math.random())];
+  length_of_password.value = "10";
+
+  list_of_characters.value =
+    "abcdefghijklmnopqrstuvwxyz" +
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
+    "0123456789";
+
+  form.onsubmit = function(event) {
+    event.preventDefault();
+
+    const LOP = Number(length_of_password.value);
+    const LOC = list_of_characters.value;
+    const NOC = LOC.length; // the number of characters
+
+    let result = '';
+    for (let i = 0; i < LOP; i++) {
+      result += LOC[Math.floor(NOC * Math.random())];
     }
-    document.getElementById("result").innerHTML += "<p>" + res + "</p>";
-  };
 
+    const p = document.createElement('p');
+    p.textContent = result;
+
+    stdout.insertBefore(p, stdout.firstChild);
+  }
 })();
     </script>
   </body>
