@@ -1,1 +1,80 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <title>mkpw</title>
+  </head>
+  <body style="font-family: monospace; font-size: 18px;">
+    <form id="form">
+      <p><label>
+        <input type="checkbox" id="lower"/>
+        abcdefghijklmnopqrstuvwxyz
+      </label></p>
+      <p><label>
+        <input type="checkbox" id="upper"/>
+        ABCDEFGHIJKLMNOPQRSTUVWXYZ
+      </label></p>
+      <p><label>
+        <input type="checkbox" id="digit"/>
+        0123456789
+      </label></p>
+      <p><label>
+        <input type="checkbox" id="symbol"/>
+        !"#$%&amp;'()*+,-./:;&lt;=&gt;?@[\]^_`{|}~
+      </label></p>
+      <p><label>
+        length:
+        <input type="number" id="nagasa"/>
+      </label></p>
+      <p><label>
+        height:
+        <input type="number" id="height"/>
+      </label></p>
+      <p><label>
+        width:
+        <input type="number" id="width"/>
+      </label></p>
+      <p><input type="submit" value="mkpw"/></p>
+    </form>
+    <pre id="stdout"></pre>
+    <script>
+(function() {
+  'strict';
 
+  lower.checked = true;
+  upper.checked = true;
+  digit.checked = true;
+  symbol.checked = false;
+
+  nagasa.value = '8';
+  height.value = '20';
+  width.value = '5';
+
+  form.onsubmit = (event) => {
+    event.preventDefault();
+
+    let list = '';
+    if (lower.checked)
+      list += 'abcdefghijklmnopqrstuvwxyz';
+    if (upper.checked)
+      list += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    if (digit.checked)
+      list += '0123456789';
+    if (symbol.checked)
+      list += '!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~';
+
+    const replicate = (n, f) => Array.from({ length: n }, f);
+
+    stdout.textContent =
+      replicate(Number(height.value), () =>
+          replicate(Number(width.value), () =>
+            replicate(Number(nagasa.value), () =>
+              list[Math.floor(list.length * Math.random())]
+              ).join('')
+            ).join('  ')
+          ).join('\n');
+  };
+})();
+    </script>
+  </body>
+</html>
