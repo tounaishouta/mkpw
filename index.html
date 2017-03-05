@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <title>mkpw</title>
+  </head>
+  <body style="font-size: large;">
+    <h1><code>mkpw</code></h1>
+    <form id="form">
+      <p><label>
+        <input type="checkbox" id="lowercase"/>
+        <code>abcdefghijklmnopqrstuvwxyz</code>
+      </label></p>
+      <p><label>
+        <input type="checkbox" id="uppercase"/>
+        <code>ABCDEFGHIJKLMNOPQRSTUVWXYZ</code>
+      </label></p>
+      <p><label>
+        <input type="checkbox" id="digit"/>
+        <code>0123456789</code>
+      </label></p>
+      <p><label>
+        <input type="checkbox" id="symbol"/>
+        <code>!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~</code>
+      </label></p>
+      <p><label>
+        <code>length of password:</code>
+        <input type="number" id="length_of_password"/>
+      </label></p>
+      <p><label>
+        <code>number of password:</code>
+        <input type="number" id="number_of_password"/>
+      </label></p>
+      <p><input type="submit" value="Generate"/>
+    </form>
+    <div id="stdout"></div>
+    <script>
+(function() {
+  'strict';
+
+  lowercase.checked = true;
+  uppercase.checked = true;
+  digit    .checked = true;
+  symbol   .checked = false;
+
+  length_of_password.value = 8;
+  number_of_password.value = 5;
+
+  form.onsubmit = (event) => {
+
+    event.preventDefault();
+
+    // list of characters
+    let loc = '';
+    if (lowercase.checked)
+      loc += 'abcdefghijklmnopqrstuvwxyz';
+    if (uppercase.checked)
+      loc += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    if (digit.checked)
+      loc += '0123456789';
+    if (symbol.checked)
+      loc += '!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~';
+
+    // number of characters
+    const noc = loc.length;
+
+    // length of password
+    const lop = Number(length_of_password.value);
+
+    // length of password
+    const nop = Number(number_of_password.value);
+
+    for (let i = 0; i < nop; i++) {
+
+      // password
+      let pw = '';
+      for (let j = 0; j < lop; j++)
+        pw += loc.charAt(Math.floor(noc * Math.random()));
+
+      // pre element
+      const pre = document.createElement('pre');
+      pre.textContent = pw;
+
+      stdout.insertBefore(pre, stdout.firstChild);
+    }
+  };
+})();
+    </script>
+  </body>
+</html>
