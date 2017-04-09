@@ -23,6 +23,10 @@
         !"#$%&amp;'()*+,-./:;&lt;=&gt;?@[\]^_`{|}~
       </label></p>
       <p><label>
+        <input type="checkbox" id="custom"/>
+        <input type="text" id="custom_chars"/>
+      </label></p>
+      <p><label>
         length:
         <input type="number" id="nagasa"/>
       </label></p>
@@ -45,6 +49,9 @@
   upper.checked = true;
   digit.checked = true;
   symbol.checked = false;
+  custom.checked = false;
+
+  custom_chars.value = '';
 
   nagasa.value = '8';
   height.value = '20';
@@ -62,17 +69,16 @@
       list += '0123456789';
     if (symbol.checked)
       list += '!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~';
+    if (custom.checked)
+      list += custom_chars.value;
 
-    const replicate = (n, f) => Array.from({ length: n }, f);
+    const replicate = (n, sep, f) => Array.from({ length: n }, f).join(sep);
 
     stdout.textContent =
-      replicate(Number(height.value), () =>
-          replicate(Number(width.value), () =>
-            replicate(Number(nagasa.value), () =>
-              list[Math.floor(list.length * Math.random())]
-              ).join('')
-            ).join('  ')
-          ).join('\n');
+      replicate(Number(height.value), '\n', () =>
+          replicate(Number(width.value), '   ', () =>
+            replicate(Number(nagasa.value), '', () =>
+              list[Math.floor(list.length * Math.random())])));
   };
 })();
     </script>
