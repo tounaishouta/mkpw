@@ -1,86 +1,102 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta http-equiv="content-type" content="text/html; charset=utf-8">
-    <title>mkpw</title>
-  </head>
-  <body style="font-family: monospace; font-size: 18px;">
-    <form id="form">
-      <p><label>
-        <input type="checkbox" id="lower"/>
-        abcdefghijklmnopqrstuvwxyz
-      </label></p>
-      <p><label>
-        <input type="checkbox" id="upper"/>
-        ABCDEFGHIJKLMNOPQRSTUVWXYZ
-      </label></p>
-      <p><label>
-        <input type="checkbox" id="digit"/>
-        0123456789
-      </label></p>
-      <p><label>
-        <input type="checkbox" id="symbol"/>
-        !"#$%&amp;'()*+,-./:;&lt;=&gt;?@[\]^_`{|}~
-      </label></p>
-      <p><label>
-        <input type="checkbox" id="custom"/>
-        <input type="text" id="custom_chars"/>
-      </label></p>
-      <p><label>
-        length:
-        <input type="number" id="nagasa"/>
-      </label></p>
-      <p><label>
-        height:
-        <input type="number" id="height"/>
-      </label></p>
-      <p><label>
-        width:
-        <input type="number" id="width"/>
-      </label></p>
-      <p><input type="submit" value="mkpw"/></p>
-    </form>
-    <pre id="stdout"></pre>
-    <script>
-(function() {
-  'strict';
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <title>mkpw</title>
+  <style>
+    input[type="text"], td {
+      font-family: Consolas, Inconsolata, monospace;
+      font-size: 18px;
+    }
+    td {
+      padding: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>mkpw</h1>
+  <form>
+    <p>
+      <input type="checkbox" id="check_lower_letters" />
+      <input type="text" id="lower_letters" size="40" readonly />
+    </p>
+    <p>
+      <input type="checkbox" id="check_upper_letters" />
+      <input type="text" id="upper_letters" size="40" readonly />
+    </p>
+    <p>
+      <input type="checkbox" id="check_digits" />
+      <input type="text" id="digits" size="40" readonly />
+    </p>
+    <p>
+      <input type="checkbox" id="check_symbols" />
+      <input type="text" id="symbols" size="40" readonly />
+    </p>
+    <p>
+      <input type="checkbox" id="check_custom" />
+      <input type="text" id="custom" size="40" />
+    </p>
+    <p>
+      length:
+      <input type="number" id="password_length" />
+    </p>
+    <p>
+      height:
+      <input type="number" id="height" />
+    </p>
+    <p>
+      width:
+      <input type="number" id="width" />
+    </p>
+    <p>
+      <input type="button" id="mkpw" value="mkpw" />
+    </p>
+  </form>
+  <div id="stdout"></div>
+  <script>
+    (function () {
+      'strict';
 
-  lower.checked = true;
-  upper.checked = true;
-  digit.checked = true;
-  symbol.checked = false;
-  custom.checked = false;
+      lower_letters.value = 'abcdefghijklmnopqrstuvwxyz';
+      upper_letters.value = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      digits.value = '0123456789';
+      symbols.value = '!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~';
+      custom.value = '';
 
-  custom_chars.value = '';
+      check_lower_letters.checked = true;
+      check_upper_letters.checked = true;
+      check_digits.checked = true;
+      check_symbols.checked = false;
+      check_custom.checked = false;
 
-  nagasa.value = '8';
-  height.value = '20';
-  width.value = '5';
+      password_length.value = '8';
+      height.value = '10';
+      width.value = '10';
 
-  form.onsubmit = (event) => {
-    event.preventDefault();
+      mkpw.onclick = () => {
 
-    let list = '';
-    if (lower.checked)
-      list += 'abcdefghijklmnopqrstuvwxyz';
-    if (upper.checked)
-      list += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    if (digit.checked)
-      list += '0123456789';
-    if (symbol.checked)
-      list += '!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~';
-    if (custom.checked)
-      list += custom_chars.value;
+        const list =
+          (check_lower_letters.checked ? lower_letters.value : '') +
+          (check_upper_letters.checked ? upper_letters.value : '') +
+          (check_digits.checked ? digits.value : '') +
+          (check_symbols.checked ? symbols.value : '') +
+          (check_custom.checked ? custom.value : '');
 
-    const replicate = (n, sep, f) => Array.from({ length: n }, f).join(sep);
+        const wrap = (tag, body) => `<${tag}>${body}</${tag}>`;
 
-    stdout.textContent =
-      replicate(Number(height.value), '\n', () =>
-          replicate(Number(width.value), '   ', () =>
-            replicate(Number(nagasa.value), '', () =>
-              list[Math.floor(list.length * Math.random())])));
-  };
-})();
-    </script>
-  </body>
+        const replicate = (n, f) => Array.from({ length: n }, f).join('');
+
+        const random_letter = () => list[Math.floor(list.length * Math.random())];
+
+        const make_td = () => wrap('td', replicate(Number(password_length.value), random_letter));
+
+        const make_tr = () => wrap('tr', replicate(Number(width.value), make_td));
+
+        const make_table = () => wrap('table', wrap('tbody', replicate(Number(height.value), make_tr)));
+
+        stdout.innerHTML = make_table();
+      };
+    })();
+  </script>
+</body>
 </html>
